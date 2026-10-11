@@ -10,19 +10,26 @@ export function calculateCost(hourlyRate, dailyRate, weeklyRate, start, end) {
     throw new Error('End time must be after start time');
   }
 
-  if (totalHours <= 24) {
-    return Math.min(hourlyRate * totalHours, dailyRate);
-  }
+  const hoursPerDay = 24;
+  const hoursPerWeek = 24 * 7;
 
-  const totalDays = Math.ceil(totalHours / 24);
+  // Best tier rates (ensure customer always gets the lowest rate per tier)
+  const effectiveDailyRate = Math.min(dailyRate, hoursPerDay * hourlyRate);
+  const effectiveWeeklyRate = Math.min(weeklyRate, 7 * effectiveDailyRate);
 
-  if (totalDays < 7) {
-    return dailyRate * totalDays;
-  }
+  const weeks = Math.floor(totalHours / hoursPerWeek);
+  const remainingHoursAfterWeeks = totalHours % hoursPerWeek;
 
-  const weeks = Math.floor(totalDays / 7);
-  const remainderDays = totalDays % 7;
-  return weeks * weeklyRate + Math.min(remainderDays * dailyRate, weeklyRate);
+  const days = Math.floor(remainingHoursAfterWeeks / hoursPerDay);
+  const remainingHours = remainingHoursAfterWeeks % hoursPerDay;
+
+  // Remainder hours cost capped at the daily rate
+  const remainingHoursCost = Math.min(remainingHours * hourlyRate, effectiveDailyRate);
+
+  // Total remainder days + hours cost capped at the weekly rate
+  const remainderCost = Math.min(days * effectiveDailyRate + remainingHoursCost, effectiveWeeklyRate);
+
+  return weeks * effectiveWeeklyRate + remainderCost;
 }
 
 /** Parses a date input, returning null when it is missing or invalid. */
