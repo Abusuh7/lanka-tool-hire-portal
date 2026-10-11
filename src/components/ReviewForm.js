@@ -49,11 +49,38 @@ export default function ReviewForm({ toolId, onSubmitted }) {
 
   if (submitted) {
     return (
-      <div className="rounded-lg bg-emerald-50 border border-emerald-200 p-4 mb-4 flex items-center gap-2">
-        <CheckCircle size={18} className="text-emerald-500 shrink-0" />
-        <p className="text-sm text-emerald-700 font-medium">
-          {t('review.submitted', 'Thanks — your review has been submitted and is awaiting moderation.')}
-        </p>
+      <div className="rounded-lg bg-emerald-50 border border-emerald-200 p-5 mb-6 shadow-sm">
+        <div className="flex items-start gap-3">
+          <CheckCircle size={22} className="text-emerald-600 shrink-0 mt-0.5" />
+          <div className="flex-1">
+            <h4 className="text-sm font-bold text-emerald-800">
+              {t('review.submittedTitle', 'Review Submitted Successfully!')}
+            </h4>
+            <p className="text-xs text-emerald-700 mt-1 leading-relaxed">
+              {t('review.submitted', 'Thanks — your review has been submitted and is awaiting moderation.')}
+            </p>
+            <div className="mt-3 flex items-center gap-3">
+              <Link
+                href="/dashboard/reviews"
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-800 bg-emerald-100 hover:bg-emerald-200 px-3 py-1.5 rounded transition-colors"
+              >
+                {t('review.viewMyReviews', 'View in My Reviews →')}
+              </Link>
+              <button
+                type="button"
+                onClick={() => {
+                  setSubmitted(false);
+                  setTitle('');
+                  setBody('');
+                  setRatings({});
+                }}
+                className="text-xs text-emerald-700 hover:underline"
+              >
+                {t('review.writeAnother', 'Write another review')}
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

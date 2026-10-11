@@ -7,21 +7,33 @@ let transporter = null;
 function getTransporter() {
   if (transporter) return transporter;
 
-  if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
+  const user = process.env.SMTP_USER || process.env.GMAIL_USER;
+  const pass = process.env.SMTP_PASS || process.env.GMAIL_APP_PASSWORD;
+  const host = process.env.SMTP_HOST || 'smtp.gmail.com';
+  const port = process.env.SMTP_PORT ? Number(process.env.SMTP_PORT) : 465;
+  const secure = process.env.SMTP_SECURE !== undefined ? process.env.SMTP_SECURE === 'true' : port === 465;
+  const service = process.env.SMTP_SERVICE || (host.includes('gmail') ? 'gmail' : undefined);
+
+  if (!user || !pass) {
     console.warn(
-      '[mailer] GMAIL_USER or GMAIL_APP_PASSWORD not set. Email sending is disabled.'
+      '[mailer] SMTP_USER/GMAIL_USER or SMTP_PASS/GMAIL_APP_PASSWORD not set. Email sending is disabled.'
     );
     return null;
   }
 
-  transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: process.env.GMAIL_USER,
-      pass: process.env.GMAIL_APP_PASSWORD,
-    },
-  });
+  const transportConfig = service
+    ? {
+        service,
+        auth: { user, pass },
+      }
+    : {
+        host,
+        port,
+        secure,
+        auth: { user, pass },
+      };
 
+  transporter = nodemailer.createTransport(transportConfig);
   return transporter;
 }
 
@@ -118,8 +130,11 @@ export async function sendPasswordResetEmail(to, resetUrl) {
 </html>
   `.trim();
 
+  const user = process.env.SMTP_USER || process.env.GMAIL_USER;
+  const fromAddress = process.env.EMAIL_FROM || `"Lanka Tool Hire" <${user}>`;
+
   const mailOptions = {
-    from: `"Lanka Tool Hire" <${process.env.GMAIL_USER}>`,
+    from: fromAddress,
     to,
     subject: 'Reset your Lanka Tool Hire password',
     text: `We received a request to reset your password.\n\nClick the link below to choose a new password. This link expires in 30 minutes.\n\n${fullUrl}\n\nIf you didn't request this, you can safely ignore this email.`,

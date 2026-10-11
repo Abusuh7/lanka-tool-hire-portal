@@ -142,5 +142,23 @@
     "myQuotes": "Saved Quotes",
     "myReviews": "My Reviews",
     "profileSettings": "Profile Settings"
+  },
+  "review": {
+    "submittedTitle": "Review Submitted Successfully!",
+    "submitted": "Thanks — your review has been submitted and is awaiting moderation.",
+    "viewMyReviews": "View in My Reviews →",
+    "writeAnother": "Write another review",
+    "writeReview": "Write a Review",
+    "performance": "Equipment performance",
+    "customerService": "Customer service",
+    "support": "Support services",
+    "afterSales": "After sales support",
+    "staffCannotReview": "Staff accounts can't write reviews. Sign in with a customer account to leave a review.",
+    "loginToReview": "Sign in to write a review.",
+    "validationError": "Please rate every category and fill in a title and review.",
+    "titlePlaceholder": "Review title (e.g. Excellent piece of kit)",
+    "bodyPlaceholder": "Share details about the equipment condition, reliability, and your overall experience...",
+    "submitting": "Submitting…",
+    "submitReviewBtn": "Submit Review"
   }
 }

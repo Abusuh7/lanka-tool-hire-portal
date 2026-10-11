@@ -18,8 +18,8 @@ export default function ToolDetailPage() {
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
 
-  const fetchTool = useCallback(async () => {
-    setLoading(true);
+  const fetchTool = useCallback(async (isInitial = false) => {
+    if (isInitial) setLoading(true);
     try {
       const res = await fetch(`/api/tools/${id}`);
       if (res.status === 404) {
@@ -29,13 +29,13 @@ export default function ToolDetailPage() {
       const data = await res.json();
       setTool(data);
     } finally {
-      setLoading(false);
+      if (isInitial) setLoading(false);
     }
   }, [id]);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    if (id) fetchTool();
+    if (id) fetchTool(true);
   }, [id, fetchTool]);
 
   if (loading) {
